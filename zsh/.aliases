@@ -1,0 +1,16 @@
+##
+# Aliases
+
+# gpg-encypt FILE RECIPIENT
+alias gpg-encrypt="__alias_gpg-encrypt"
+alias ll="ls -lhAGF"
+alias g=git
+alias shrug="function f() { echo \"\$@ ¯\_(ツ)_/¯\"; }; f"
+
+# $1 - file
+# $2 - recipient
+function __alias_gpg-encrypt {
+	echo "test $1, $2"
+	fp=`gpg --fingerprint "$2" | head -1 | awk '{ print \$2}' | tail -c 9`
+	gpg --output "${1}.${fp}.gpg" --encrypt --recipient "$2" "$1";
+}

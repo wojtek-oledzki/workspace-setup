@@ -1,0 +1,85 @@
+[core]
+	editor = vim
+	ui = true
+
+[user]
+	name = Wojtek Oledzki
+	email =
+	signingkey =
+
+[push]
+	default = simple
+
+[color]
+	ui = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+[alias]
+	a = add
+	b = branch
+	c = commit
+	d = diff
+	f = fetch
+	l = pull
+	o = checkout
+	p = push
+	s = status
+
+	wip = "!f() { git commit -m WIP; git push --no-verify; }; f"
+	pp = "!f() { git push --force --no-verify; }; f"
+	cc = "!f() { git commit --amend --no-edit; }; f"
+
+	rebasemofo = "!f() { s=$1; git fetch; git reset --soft \"$s\"; git commit -C ORIG_HEAD; }; f"
+	mergemofo = "!f() { git fetch; git push origin --no-verify origin/$1:master && git push origin --no-verify :$1; }; f"
+
+	dg = "!f() { d=${1-origin/master}; git branch --merged \"$d\" -vv | grep ': gone]' | awk '{ print $1; }' | xargs git branch -d; }; f"
+
+	cb = "!f() { s=$1; d=$2; if [ -z \"$2\" ]; then d=$1; s='origin/master'; fi; git push origin $s:refs/heads/$d ; git fetch origin ; git checkout --track -b $d origin/$d ; }; f"
+
+	cl = "!f() { d=${1-release-candidate}; git log --no-merges --pretty='%s (%an) [%h]' origin/$d..HEAD | grep -v '(ci)' | xargs -I {} echo ' o    {}'; }; f"
+	cn = "!f() { d=${1-release-candidate}; git log --no-merges --pretty='%an' origin/$d..HEAD | grep -v '^ci' | sort | uniq; }; f"
+
+	df = diff
+	lg = log -p
+	ll = log -n5
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit
+	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	ls = ls-files
+
+	branch-find-not-merged = "!f() { for i in `git branch -r | grep tkt-`; do echo \"checking branch $i\"; git cherry -v $1 $i; done }; f"
+
+	df = difftool -x /Applications/DiffMerge.app/Contents/MacOS/DiffMerge
+	patch = diff --patch
+
+[difftool]
+	prompt = false
+
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+
+[credential]
+	helper=""
+
+[commit]
+	gpgsign = true
+
+[diff "sopsdiffer"]
+	textconv = sops -d
